@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     ports:
+      - "3306:3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: anagram
+       MYSQL_DATABASE: anagram
+       MYSQL_USER: anagram
+       MYSQL_PASSWORD: anagram
+
+volumes:
+    db_data:
