@@ -1,7 +1,5 @@
 package com.github.nknordeen.anagram.api
 
-import java.sql.ResultSet
-
 import org.scalatra._
 
 
