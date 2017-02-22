@@ -5,6 +5,7 @@ import java.sql.{PreparedStatement, Connection}
 class AnagramDAO(connection: Connection) {
   val GET_WORD_STATEMENT = connection.prepareStatement(AnagramDAO.SELECT_WORD)
   val INSERT_WORD_STATEMENT = connection.prepareStatement(AnagramDAO.INSERT_WORD)
+  val DELETE_WORD_STATEMENT = connection.prepareStatement(AnagramDAO.DELETE_WORD)
 
   def getWord(word: String) = {
     GET_WORD_STATEMENT.setString(1, word)
@@ -18,6 +19,11 @@ class AnagramDAO(connection: Connection) {
     // on inserts, so ok for return type to be Unit
     boundStatement.execute()
   }
+
+  def deleteWord(word: String): Unit = {
+    DELETE_WORD_STATEMENT.setString(1, word)
+    DELETE_WORD_STATEMENT.execute()
+  }
 }
 
 object AnagramDAO {
@@ -25,10 +31,13 @@ object AnagramDAO {
   val ALPHABET_DB_COLUMNS = ALPHABET.mkString(" INT, ") + " INT"
   val COLUMNS_AND_INDEX = ALPHABET.zipWithIndex
 
-  private val SELECT_WORD = "SELECT * FROM indexed_words WHERE word = ?"
+  val SELECT_WORD = "SELECT * FROM indexed_words WHERE word = ?"
+
   val INSERT_WORD =
     s"""INSERT IGNORE INTO indexed_words (word, ${ALPHABET.mkString(", ")})
         | VALUES (?, ${ALPHABET.map(_ => '?').mkString(", ")})""".stripMargin
+
+  val DELETE_WORD = "DELETE FROM indexed_words WHERE word = ?"
 
   def bindInsertStatement(statement: PreparedStatement)(word: String) = {
     statement.setString(1, word)

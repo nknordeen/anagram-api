@@ -15,7 +15,10 @@ class AnagramApi(implicit anagramDAO: AnagramDAO) extends ScalatraServlet with N
     Ok(anagramDAO.getWord(word))
   }
 
-  post("/") {
+  /**
+    * Return 400 if there are invalid words, but still inserts the valid words received.
+    */
+  post("/words.json") {
     val words = parsedBody.extract[List[String]]
     val allWords = words
       .flatMap(AnagramUtils.removeSpaces)
@@ -29,6 +32,16 @@ class AnagramApi(implicit anagramDAO: AnagramDAO) extends ScalatraServlet with N
       Created()
     } else {
       BadRequest(reason = s"Words: [ $wordsNotCreated ] were not valid words.  The rest were created")
+    }
+  }
+
+  delete("/words/:word") {
+    val word = params("word")
+    if (AnagramUtils.isValidWord(word)) {
+      anagramDAO.deleteWord(word)
+      NoContent()
+    } else {
+      BadRequest(reason = s"$word . Is not a valid word")
     }
   }
 }
