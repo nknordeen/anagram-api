@@ -13,7 +13,6 @@ class ScalatraBootstrap extends LifeCycle {
 
   val connection = DriverManager.getConnection(s"jdbc:mysql://$DB_HOST:$DB_PORT/$DB_DATABASE", DB_USER, DB_PASSWORD)
 
-  AnagramUtils.importDataToMySQL(connection)
   implicit val anagramDAO = new AnagramDAO(connection)
 
   override def init(context: ServletContext) {
