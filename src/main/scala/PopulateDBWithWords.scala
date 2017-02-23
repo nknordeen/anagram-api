@@ -19,13 +19,15 @@ object PopulateDBWithWords extends App {
        | (word VARCHAR(255) PRIMARY KEY, $ALPHABET_DB_COLUMNS );""".stripMargin
   connection.prepareStatement(CREATE_INDEXED_WORDS).execute()
   // we don't care if the word is already there, so failing to insert is fine
+  println("=============================")
   println("Starting import of dictionary")
+  println("=============================")
 
   val statement = connection.prepareStatement(INSERT_WORD)
   Source.fromFile("dictionary.txt")
     .getLines()
     .foreach(word => {
-      bindInsertStatement(statement)(word)
+      bindInsertStatement(statement)(word.toLowerCase())
       statement.addBatch()
     })
   statement.executeBatch()

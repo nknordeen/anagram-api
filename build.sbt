@@ -1,6 +1,5 @@
+import org.fusesource.scalate.ScalatePlugin.ScalateKeys._
 import org.scalatra.sbt._
-import org.scalatra.sbt.PluginKeys._
-import ScalateKeys._
 
 val ScalatraVersion = "2.5.0"
 
@@ -23,6 +22,7 @@ libraryDependencies ++= Seq(
   "org.scalatra" %% "scalatra-json" % ScalatraVersion,
   "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
   "org.json4s" %% "json4s-native" % "3.5.0",
+  "org.json4s" %% "json4s-ext" % "3.5.0",
   "mysql" % "mysql-connector-java" % "5.1.40",
   "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
   "org.scalatest" %% "scalatest" % "3.0.1",
@@ -46,3 +46,5 @@ scalateTemplateConfig in Compile := {
 }
 
 enablePlugins(JettyPlugin)
+
+containerPort in Jetty := 3000
