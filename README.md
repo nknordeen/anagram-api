@@ -4,14 +4,15 @@
 
 ```sh
 $ cd anagram_api
-$ ./sbt
-> jetty:start
-> browse
+$ sbt "run-main JettyLauncher"
 ```
 
-If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
+This will start up the api.  Open [http://localhost:3000/](http://localhost:3000/) in your browser.
 
+I have set "dockerhost" as the ip off my docker-machine, since I'm not running docker natively.  Please set the config with the correct ip for mysql connector to connect to.
 
-I have set "dockerhost" as the ip off my docker-machine, since I'm not running docker natively.  Please set the config with the correct ip for mysql connector to connect to
+To change the MySQL configs run with `sbt "run-main JettyLauncher" -Dmysql.host=[host]`.  Here is a list of configs:  `mysql.host`, `mysql.host.port`, `mysql.user`, `mysql.password`, `mysql.database`
+
+For unit tests: `sbt test` for end to end tests: go to `givenTests` and run `ruby anagram_test.rb`
 
 Execute `sbt "run-main PopulateDBWithWords"` to set up the population of the mysql tables;
