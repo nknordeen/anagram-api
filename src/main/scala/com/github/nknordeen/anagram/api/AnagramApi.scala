@@ -17,6 +17,9 @@ class AnagramApi(implicit anagramDAO: AnagramDAO) extends ScalatraServlet with N
     contentType = formats("json")
   }
 
+  /**
+    * returns a list of all the anagrams of word
+    */
   get("/anagrams/:word.json") {
     val word = params("word")
     val limit = params.get(PAGE_LIMIT).map(_.toInt)
@@ -24,6 +27,36 @@ class AnagramApi(implicit anagramDAO: AnagramDAO) extends ScalatraServlet with N
       Ok(body = anagramDAO.getAnagrams(word, limit))
     } else {
       BadRequest(reason = s"Invalid word: $word")
+    }
+  }
+
+  get("/wordStats") {
+    Ok(anagramDAO.getDictionaryStats)
+  }
+
+  post("/areAnagrams") {
+    val words = parsedBody
+      .extract[Words]
+      .words
+      .flatMap(AnagramUtils.removeSpaces)
+    val areValidWords = words
+      .forall(AnagramUtils.isValidWord)
+    if (areValidWords && words.nonEmpty) {
+      val letterCounts = words.map(word => {
+        word.foldLeft(Map[Char, Int]())((accum, letter) => {
+          if (accum.contains(letter)) {
+            val totalCount = accum(letter) + 1
+            accum.updated(letter, totalCount)
+          } else {
+            accum + (letter -> 1)
+          }
+        })
+      })
+      val validator = letterCounts.head
+      val areAnagrams = letterCounts.forall(letterCount => letterCount == validator)
+      Ok(body = AreAnagrams(areAnagrams))
+    } else {
+      BadRequest(reason = "Invalid words")
     }
   }
 
@@ -54,10 +87,26 @@ class AnagramApi(implicit anagramDAO: AnagramDAO) extends ScalatraServlet with N
     }
   }
 
+  /**
+    * deletes a single word from the dictionary
+    */
   delete("/words/:word.json") {
     val word = params("word")
     if (AnagramUtils.isValidWord(word)) {
       anagramDAO.deleteWord(word)
+      Ok()
+    } else {
+      BadRequest(reason = s"Invalid word: $word")
+    }
+  }
+
+  /**
+    * deletes a word and all of its anagrams
+    */
+  delete("/anagrams/:word.json") {
+    val word = params("word")
+    if (AnagramUtils.isValidWord(word)) {
+      anagramDAO.deleteWordAndAnagrams(word)
       Ok()
     } else {
       BadRequest(reason = s"Invalid word: $word")

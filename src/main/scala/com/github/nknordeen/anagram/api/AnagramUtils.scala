@@ -8,10 +8,10 @@ object AnagramUtils {
 
   val NON_ALPHABETIC_REGEX = "[^A-Za-z]".r
 
-  def mySqlResults(rs: ResultSet): List[String] = {
-    val c = ListBuffer[String]()
+  def mySqlResults[T](rs: ResultSet)(constructor: (ResultSet) => T): List[T] = {
+    val c = ListBuffer[T]()
     while (rs.next){
-      c.append(rs.getString("word"))
+      c.append(constructor(rs))
     }
     c.toList
   }
