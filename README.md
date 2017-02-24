@@ -22,26 +22,26 @@ For unit tests: `sbt test` for end to end tests: go to `givenTests` and run `rub
 
 * `get("/anagrams/:word.json")`: returns a list of all the anagrams of word
 * `get("/wordStats")`: returns min/max/median/average word length and count of all words
-* `post("/areAnagrams")`:  pass a list of words and returns true or false if all words are anagrams of each other.
+* `post("/areAnagrams")`:  pass a list of words and returns true or false if all words are anagrams of each other. Example post json request:
 
 
     ```
-        body: {
+        {
             "words": [...]
         }
     ```
 
 
-* `post("/words.json")`: adds word(s) to the dictionary (MySQL)
+* `post("/words.json")`: adds word(s) to the dictionary (MySQL).  Example post json request:
 
 
     ```
-        body: {
+        {
             "words": [...]
         }
     ```
 
-    
+
 * `delete("/words/:word.json")`: deletes a single word from the dictionary
 * `delete("/anagrams/:word.json")`: deletes the word passed plus all the words that are anagrams of it.
 * `delete("/words.json")`: DANGER:  deletes all words in dictionary.
